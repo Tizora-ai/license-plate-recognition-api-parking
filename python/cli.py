@@ -66,11 +66,6 @@ def cmd_bench(args: argparse.Namespace) -> int:
 
 
 def cmd_info(_: argparse.Namespace) -> int:
-    warmup(runs=0)
-    # ensure engine created even if warmup skipped
-    from python.alpr_engine import get_engine
-
-    get_engine()
     print(json.dumps(engine_info(), indent=2))
     return 0
 

@@ -4,7 +4,7 @@ Tests for daily IP rate limiter and /demo endpoints (pure Python unittest).
 
 from __future__ import annotations
 
-import io
+import datetime
 import json
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -80,7 +80,10 @@ class TestIPRateLimiter(unittest.TestCase):
         self.assertFalse(self.test_limiter.check_and_increment(ip)[0])
 
         # Simulate next day by mocking _current_date
-        with patch.object(self.test_limiter, "_current_date", return_value="2026-09-23"):
+        tomorrow = (
+            datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=1)
+        ).strftime("%Y-%m-%d")
+        with patch.object(self.test_limiter, "_current_date", return_value=tomorrow):
             allowed, _, remaining, _ = self.test_limiter.check_and_increment(ip)
             self.assertTrue(allowed)
             self.assertEqual(remaining, 2)

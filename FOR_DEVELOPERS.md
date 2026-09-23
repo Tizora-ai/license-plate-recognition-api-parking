@@ -2,7 +2,6 @@
 
 ## Included
 - `python/` — FastAPI API + ALPR engine + CLI
-- `deploy/linux-cpu/` — Ubuntu CPU setup + systemd scripts
 - `docs/` — short project docs
 - `assets/` — sample test image
 - `requirements.txt` — Windows (DirectML)
@@ -29,8 +28,9 @@ pip install -r requirements.txt
 ```bash
 cd alpr
 cp .env.example .env
-bash deploy/linux-cpu/setup.sh
+python3.12 -m venv .venv
 source .venv/bin/activate
+pip install -r requirements-linux-cpu.txt
 set -a; source .env; set +a
 python -m python.api
 ```

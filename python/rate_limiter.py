@@ -129,12 +129,6 @@ class IPRateLimiter:
             "reset_in_seconds": reset_seconds,
         }
 
-    def reset_ip(self, ip: str) -> None:
-        """Reset quota for a specific IP (useful in testing/admin)."""
-        with self._lock:
-            if ip in self._records:
-                del self._records[ip]
-
 
 # Singleton instance configured from environment variables
 _DEMO_DAILY_LIMIT = int(os.getenv("DEMO_DAILY_LIMIT", "10"))
