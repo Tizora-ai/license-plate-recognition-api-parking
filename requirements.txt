@@ -1,0 +1,7 @@
+# Windows local (DirectML GPU). For Linux CPU EC2 use requirements-linux-cpu.txt
+fast-alpr[onnx-directml]>=0.3.0
+opencv-python-headless>=4.8.0
+numpy>=1.24.0
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.12

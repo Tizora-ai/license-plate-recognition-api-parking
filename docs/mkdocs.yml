@@ -1,0 +1,16 @@
+site_name: alpr
+site_description: License plate recognition
+nav:
+  - Introduction: index.md
+  - Installation: installation.md
+  - Quick Start: quick_start.md
+  - Custom Models: custom_models.md
+  - Notes: contributing.md
+  - Reference: reference.md
+plugins:
+  - search
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences
+  - toc:
+      permalink: true
