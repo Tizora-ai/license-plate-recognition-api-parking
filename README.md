@@ -1,7 +1,28 @@
 # License Plate Recognition API
 
 ## Description
-An ALPR (Automatic License Plate Recognition) REST API that detects and reads license plates in images. Built with **FastAPI** and **ONNX Runtime**, it runs on GPU (DirectML / CUDA) or CPU.
+An ALPR (Automatic License Plate Recognition) REST API for parking. Send it a photo from an
+entry camera, a patrol car, or a phone. It sends back the plate number, how sure it is, and
+where the plate is in the photo.
+
+The API only reads plates. Your app does the rest — check the plate against your permit
+list, start or end a parking session, open a gate, or mark a car that stayed too long. The
+answer is plain JSON, so it is easy to connect to the system you already use.
+
+Built with **FastAPI** and **ONNX Runtime**. It runs on a GPU (DirectML / CUDA) or on a
+normal CPU, so you can run it on a laptop, a small box at the site, or a cloud server.
+
+## Use Cases
+- **Permit verification** — read the plate at the entrance and check it against your permit
+  list before the barrier opens.
+- **Parking enforcement** — let a patrol officer photograph a vehicle and get the plate back
+  for a permit or payment check, instead of typing it by hand.
+- **Digital chalking** — record plate and timestamp on each pass through a timed zone, and
+  compare the two to find overstays.
+- **Ticketless / pay-by-plate parking** — capture the plate on entry and exit and use it as
+  the key for the session and the payment.
+- **Gated and residential access** — open a gate for vehicles on a resident or staff list.
+- **Occupancy and audit records** — log which vehicles were in a lot and when.
 
 ## Features
 - Detects multiple license plates in one image.
@@ -37,8 +58,7 @@ An ALPR (Automatic License Plate Recognition) REST API that detects and reads li
 ```
 
 The models load once when the server starts and stay in memory, warmed up so the
-first request is not slow. The demo endpoints add a per-IP daily quota check
-before the image is decoded.
+first request is not slow.
 
 ## Model Modes
 Set the mode with the `ALPR_MODE` environment variable:
@@ -80,8 +100,6 @@ Copy `.env.example` to `.env`, then edit it:
 | `ALPR_DET_CONF` | from mode | Detector confidence threshold |
 | `ALPR_INTRA_THREADS` | `4` | ONNX intra-op threads |
 | `ALPR_INTER_THREADS` | `1` | ONNX inter-op threads |
-| `DEMO_DAILY_LIMIT` | `10` | Maximum demo requests per IP per day |
-| `TRUST_PROXY_HEADERS` | `false` | Set to `true` behind Nginx / Cloudflare / ALB to read the real client IP |
 
 ## Usage
 
@@ -91,9 +109,6 @@ Copy `.env.example` to `.env`, then edit it:
 | `GET` | `/health` | Service status and engine / provider information |
 | `POST` | `/recognize` | Detected plates as JSON |
 | `POST` | `/recognize/image` | Annotated JPEG (latency in the `X-ALPR-Latency-Ms` header) |
-| `POST` | `/demo/recognize` | Rate-limited JSON with optional annotated image and plate crops (base64) |
-| `POST` | `/demo/recognize/image` | Rate-limited annotated JPEG (uses the same quota) |
-
 
 Interactive docs: `http://<host>:8000/docs`
 
@@ -104,10 +119,6 @@ curl -X POST http://127.0.0.1:8000/recognize -F "image=@car.jpg"
 
 # Get an annotated image
 curl -X POST http://127.0.0.1:8000/recognize/image -F "image=@car.jpg" -o result.jpg
-
-# Demo recognition (limited to 10 requests/day per IP by default)
-curl -X POST http://127.0.0.1:8000/demo/recognize -F "image=@car.jpg"
-
 ```
 
 ### Sample Response
